@@ -1,1 +1,188 @@
 
+########## LAB 5: Numeric Prediction ########## 
+########## Total points: 3 ##########
+
+# Install and load the necessary packages
+install.packages("labelVector")
+install.packages("tidyverse")
+library(caret)
+library(rpart.plot)
+library(gridExtra)
+library(labelVector)
+library(tidyverse)
+library(standardize)
+
+# Set the working directory (change path as needed)
+setwd("/Users/andrelai/Desktop/Business Analytics")
+
+########## Cereal data analysis ##########
+# Analyze how cereal features affect the rating of the cereal
+
+# Load the dataset "Cereals.csv"
+df <- read.csv("Cereals.csv")
+
+# The data contains the following variables:
+# 1. Name of cereal
+# 2. calories: calories per serving
+# 3. protein: grams of protein
+# 4. fat: grams of fat
+# 5. sodium: milligrams of sodium
+# 6. fiber: grams of dietary fiber
+# 7. carbo: grams of complex carbohydrates
+# 8. sugars: grams of sugars
+# 9. potass: milligrams of potassium
+# 10. vitamins: vitamins and minerals (0, 25, or 100)
+# 11. shelf: display shelf (1, 2, or 3)
+# 12. rating: a rating of the cereals (calculated by Consumer Reports)
+
+# Remove the first column (Name of cereal)
+df = df[,-1]
+
+########## Lab questions start here ##########
+
+# Question 1
+# 1.1 (0.1pts) - Check the distribution of ratings
+# Title: "Original Rating Distribution", x-axis label: "Rating"
+ggplot(data = df, aes(x = rating)) + 
+  geom_histogram(colour = "grey", fill = "black") +
+  ggtitle("Original Rating Distribution") +
+  labs(x = "Rating")
+
+# 1.2 (0.1pts) - Prepare the data for prediction
+# Split the data into training (80%) and testing (20%) sets
+set.seed(123)
+trainRows <- createDataPartition(y = df$rating, p = 0.8, list = FALSE)
+train_set <- df[trainRows,]
+test_set <- df[-trainRows,]
+
+########## k-NN ##########
+
+# Data Standardization
+# Standardize the data (except for the target variable "rating")
+train_set_stand <- train_set
+test_set_stand <- test_set
+
+# 2.1 (0.1pts) - Apply standardization on variables from 1 to 10
+scaled_train <- scale(train_set[,1:10])
+center_train <- attr(scaled_train, "scaled:center")
+scale_train <- attr(scaled_train, "scaled:scale")
+train_set_stand[,1:10] <- scaled_train
+test_set_stand[,1:10] <- scale(test_set[,1:10], center = center_train, scale = scale_train)
+
+# 2.2 (0.1pts) - Train k-NN model
+knn_model <- train(rating ~ ., train_set_stand, method = "knn")
+knn_model 
+
+# 2.3 (0.1pts) - Get the predictions from the k-NN model
+knnPred <- predict(knn_model, test_set_stand)
+
+# 2.4 (0.1pts) - Create histogram for predicted ratings
+knnPred_dataframe <- data.frame(knnPred = knnPred)
+h_pred_knn <- ggplot(data = knnPred_dataframe, aes(x = knnPred)) + 
+  geom_histogram(colour = "lightblue", fill = "darkblue") +
+  ggtitle("KNN, Distribution of Predicted Rating") +
+  labs(x = "Predicted Rating")
+
+# 2.5 (0.1pts) - Compare with the "true" rating distribution from the test set
+rating_dist <- ggplot(data = test_set, aes(x = rating)) + 
+  geom_histogram(colour = "grey", fill = "black") +
+  ggtitle("Original Rating Distribution") +
+  labs(x = "Rating")
+
+# 2.6 (0.1pts) - Compare the two distributions side by side
+grid.arrange(rating_dist, h_pred_knn, nrow = 1)
+
+# Error Metrics
+# 2.7 (0.1pts) - Compute the prediction error
+knn_error <- knnPred - test_set_stand$rating
+
+# 2.8 (0.1pts) - Mean Error (ME)
+knnME <- mean(knn_error)
+knnME
+
+# 2.9 (0.1pts) - Mean Absolute Error (MAE)
+knnMAE <- MAE(pred = knnPred, obs = test_set_stand$rating)
+knnMAE
+
+# 2.10 (0.1pts) - Mean Absolute Percentage Error (MAPE)
+knn_abs_relative_error <- abs(knn_error / test_set_stand$rating)
+knnMAPE <- mean(knn_abs_relative_error)
+knnMAPE
+
+# 2.11 (0.1pts) - Root Mean Squared Error (RMSE)
+knnRMSE <- RMSE(pred = knnPred, obs = test_set_stand$rating)
+knnRMSE
+
+# 2.12 (0.1pts) - Put together the error measures
+res_knn <- c(knnME, knnMAE, knnMAPE, knnRMSE)
+names(res_knn) <- c("ME", "MAE", "MAPE", "RMSE")
+res_knn <- set_label(res_knn, "KNN")
+res_knn
+
+########## Regression Tree ##########
+
+# 3.1 (0.1pts) - Train regression tree using non-standardized data
+train_set <- na.omit(train_set)
+
+# 3.2 (0.1pts) - Plot the regression tree
+nzv <- nearZeroVar(train_set)
+if(length(nzv) > 0) {
+  train_set <- train_set[, -nzv]
+}
+
+ctrl <- trainControl(method = "cv", number = 10)
+rtree <- train(rating ~ ., data = train_set, method = "rpart", trControl = ctrl, na.action = na.omit)
+rpart.plot(rtree$finalModel, digits = -3)
+
+# 3.3 (0.1pts) - Highest rating based on the tree plot
+# Sugar less than 8 and calories less than 95 will get the highest rating of 65.1.
+
+# 3.4 (0.1pts) - Get predictions from the regression tree
+treePred <- predict(rtree, test_set)
+
+# 3.5 (0.1pts) - Create histogram for predicted ratings from the tree model
+h_pred_tree <- ggplot(data = test_set, aes(x = treePred)) + 
+  geom_histogram(colour = "red", fill = "darkred") +
+  ggtitle("Tree, Distribution of Predictions") +
+  labs(x = "Predictions")
+
+# 3.6 (0.1pts) - Compare predicted rating distribution with actual rating distribution
+grid.arrange(rating_dist, h_pred_tree, nrow = 1)
+
+# Error Metrics
+# 3.7 (0.1pts) - Prediction error for regression tree
+tree_error <- treePred - test_set$rating
+
+# 3.8 (0.1pts) - Mean Error (ME) for regression tree
+ME_tree <- mean(tree_error)
+
+# 3.9 (0.1pts) - Mean Absolute Error (MAE) for regression tree
+treeMAE <- MAE(pred = treePred, obs = test_set$rating)
+
+# 3.10 (0.1pts) - Mean Absolute Percentage Error (MAPE) for regression tree
+tree_abs_relative_error <- abs(tree_error / test_set$rating)
+treeMAPE <- mean(tree_abs_relative_error)
+
+# 3.11 (0.1pts) - Root Mean Squared Error (RMSE) for regression tree
+treeRMSE <- RMSE(pred = treePred, obs = test_set$rating)
+
+# 3.12 (0.1pts) - Put together the performance measures for regression tree
+res_tree <- c(ME_tree, treeMAE, treeMAPE, treeRMSE)
+names(res_tree) <- c("ME", "MAE", "MAPE", "RMSE")
+res_tree <- set_label(res_tree, "Regression Tree")
+res_tree
+
+########## Model Comparison ##########
+
+# 4.1 (0.1pts) - Compare the distributions of the original ratings with the predicted ratings
+grid.arrange(rating_dist, h_pred_knn, h_pred_tree, nrow = 1)
+
+# 4.2 (0.1pts) - Compare the error metrics between k-NN and regression tree
+res_knn
+res_tree
+
+# 4.3 (0.1pts) - If RMSE is the evaluation metric, which model should be picked?
+# KNN, since its RMSE is lower and we want to minimize the error.
+
+# 4.4 (0.1pts) - Report the sample size of the dataset
+nrow(df)  # 77 cereal brands in the dataset
