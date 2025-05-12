@@ -12,14 +12,11 @@ library(labelVector)
 library(tidyverse)
 library(standardize)
 
-# Set the working directory (change path as needed)
-setwd("/Users/andrelai/Desktop/Business Analytics")
-
 ########## Cereal data analysis ##########
 # Analyze how cereal features affect the rating of the cereal
 
 # Load the dataset "Cereals.csv"
-df <- read.csv("Cereals.csv")
+df <- read.csv(""C:/Users/cococ/Downloads/Cereals.csv"")
 
 # The data contains the following variables:
 # 1. Name of cereal
