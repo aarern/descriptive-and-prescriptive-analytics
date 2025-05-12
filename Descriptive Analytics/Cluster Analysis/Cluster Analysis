@@ -1,1 +1,84 @@
 
+########## LAB 3: Clustering ##########
+
+#----[Reading the data]
+#load the packages
+library(stats)
+library(factoextra)
+
+#Set the working directory (change the path to your own)
+setwd("/Users/xbi/Dropbox/Carlson SOM/Teaching/BA3551 2024/Materials/3_Clustering/R_lecture/OtherMaterial/PracticeProblem")
+
+#Read the data from constituents-financials.csv
+data <- read.csv("constituents-financials.csv")
+
+#Summarize the dataset
+summary(data)
+head(data)
+
+#Select variables for clustering
+var_names <- c("Price","Dividend.Yield","Earnings.Share","X52.Week.Low","X52.Week.High","Market.Cap","EBITDA","Price.Sales")
+data4clustering <- data[,var_names]
+rownames(data4clustering) <- data$Symbol
+
+########## Lab questions start here ##########
+
+#Question 1: Normalization
+data_stand <- scale(data4clustering)
+rownames(data_stand) <- rownames(data4clustering)
+
+# Check if standardized
+summary(data_stand)
+
+#Question 2: Hierarchical Clustering
+
+# 2.1 Distance matrix
+d_mat <- dist(data_stand, method = "manhattan")
+View(as.matrix(d_mat))
+
+# 2.2 Hierarchical clustering
+h <- hclust(d_mat, method = "ward.D2")
+
+# 2.3 Plot dendrogram
+plot(h, labels = FALSE, main = "Dendrogram")
+
+# 2.4 Cut into 5 clusters
+clusters <- cutree(h, k = 5)
+
+# 2.5 Assign cluster numbers
+data_with_clusters <- data4clustering
+data_with_clusters$Cluster <- clusters
+
+# 2.6 Summarize cluster 1 and 4
+summary(data_with_clusters[data_with_clusters$Cluster == 1, ])
+summary(data_with_clusters[data_with_clusters$Cluster == 4, ])
+
+# 2.7 Mean and median
+mean(data_with_clusters$Price[data_with_clusters$Cluster == 1], na.rm = TRUE)
+mean(data_with_clusters$Price[data_with_clusters$Cluster == 4], na.rm = TRUE)
+median(data_with_clusters$Dividend.Yield[data_with_clusters$Cluster == 1], na.rm = TRUE)
+median(data_with_clusters$Dividend.Yield[data_with_clusters$Cluster == 4], na.rm = TRUE)
+
+#Question 3: K-Means
+
+# 3.1 K-means with k=5
+set.seed(666)
+k <- kmeans(data_stand, centers = 5, nstart = 25)
+
+# 3.2 Cluster sizes
+k$size
+
+# 3.3 WSS curve
+wss <- c()
+for (i in 1:10) {
+  wss[i] <- sum(kmeans(data_stand, centers = i, nstart = 25)$withinss)
+}
+
+# 3.4 Elbow plot
+plot(1:10, wss, type = "b", xlab = "Number of Clusters", ylab = "WSS", main = "Elbow Plot")
+
+# 3.5 Choose optimal k (e.g., 4)
+k_opt <- kmeans(data_stand, centers = 4, nstart = 25)
+
+# 3.6 Visualize clustering
+fviz_cluster(k_opt, data = data_stand)
