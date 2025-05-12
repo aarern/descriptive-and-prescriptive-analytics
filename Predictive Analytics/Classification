@@ -1,1 +1,108 @@
 
+########## LAB 4: Classification ########## 
+########## Sports Analytics ##########
+
+# Dataset: NBA rookies
+# Goal: Predict whether a rookie lasts at least 5 years in the NBA
+# TARGET: Yes or No (Yes = lasted 5+ years, No = did not)
+
+# Features:
+# GP = Games Played, MIN = Minutes, PTS = Points
+# FGM = Field Goals Made, FGA = Attempts, FG = %
+# 3PM = 3-Point Made, 3PA = 3-Point Attempts, 3P% = 3-Point %
+# FTM, FTA, FT. = Free Throws Made, Attempts, %
+# OREB = Offensive Rebounds, DREB = Defensive Rebounds, REB = Total Rebounds
+# AST = Assists, STL = Steals, BLK = Blocks
+
+# Source: https://data.world/exercises/logistic-regression-exercise-1/
+
+# Required packages
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(standardize)
+
+# Load data
+data <- read.csv("C:/Users/cococ/Downloads/nba2.csv")
+data <- data[,-1]  # Remove playerID column
+
+########## Question 1 ##########
+
+# 1.1 Convert TARGET to factor
+data$TARGET <- as.factor(data$TARGET)
+
+# 1.2 View summary
+summary(data)
+
+# Observation: "No" is the minority class (506), "Yes" has 823 cases
+
+# 1.3 Split data (70% training, 30% testing)
+set.seed(123)
+train_rows <- createDataPartition(y = data$TARGET, p = 0.7, list = FALSE)
+data_train <- data[train_rows, ]
+data_test <- data[-train_rows, ]
+
+########## Question 2: k-NN ##########
+
+# Data Standardization
+data_train_stand <- data_train
+data_test_stand <- data_test
+
+# 2.1 Standardize columns 1–18 (exclude TARGET)
+scaled_train <- scale(data_train[, 1:18])
+center_train <- attr(scaled_train, "scaled:center")
+scale_train <- attr(scaled_train, "scaled:scale")
+data_train_stand[, 1:18] <- scaled_train
+
+# 2.2 Apply same scaling to test data
+data_test_stand[, 1:18] <- scale(data_test[, 1:18], center = center_train, scale = scale_train)
+
+# 2.3 Train k-NN with k = 9, 11, 13, 15, 17
+grid <- expand.grid(k = c(9, 11, 13, 15, 17))
+fitKNN <- train(TARGET ~ ., data = data_train_stand, method = "knn",
+                trControl = trainControl(search = "grid"), tuneGrid = grid)
+fitKNN
+plot(fitKNN, ylab = "Accuracy")
+
+# Best k based on accuracy: 17
+
+# 2.4 Predict on test set
+knn_predictions <- predict(fitKNN, data_test_stand)
+
+# 2.5 Evaluate with confusion matrix
+confusionMatrix(knn_predictions, data_test_stand$TARGET)
+confusionMatrix(knn_predictions, data_test_stand$TARGET, mode = "prec_recall", positive = "Yes")
+confusionMatrix(knn_predictions, data_test_stand$TARGET, mode = "prec_recall", positive = "No")
+
+########## Question 3: Decision Tree ##########
+
+# 3.1 Train Decision Tree
+fitDT <- train(TARGET ~ ., data = data_train, method = "rpart")
+
+# 3.2 Plot the tree
+rpart.plot(fitDT$finalModel)
+
+# 3.3 Interpretation:
+# - Playing more than 59 games is a key factor in predicting a longer career.
+# - High offensive rebound % may help offset fewer games played.
+
+# 3.4 Predict on test set
+DT_predictions <- predict(fitDT$finalModel, newdata = data_test, type = "class")
+
+# 3.5 Evaluate with confusion matrix
+confusionMatrix(DT_predictions, data_test$TARGET)
+confusionMatrix(DT_predictions, data_test$TARGET, mode = "prec_recall", positive = "Yes")
+confusionMatrix(DT_predictions, data_test$TARGET, mode = "prec_recall", positive = "No")
+
+# 3.6 Adjust threshold (cut-off = 0.7 for class "Yes")
+DT_prob <- as.data.frame(predict(fitDT$finalModel, newdata = data_test, type = "prob"))
+DT_prob$pred_class <- ifelse(DT_prob$Yes > 0.7, "Yes", "No")
+
+# 3.7 Threshold analysis for class "No"
+DT_prob$pred_class2 <- ifelse(DT_prob$No > 0.7, "No", "Yes")
+DT_prob$pred_class <- as.factor(DT_prob$pred_class)
+
+confusionMatrix(DT_prob$pred_class, data_test$TARGET, mode = "prec_recall", positive = "Yes")
+confusionMatrix(DT_prob$pred_class, data_test$TARGET, mode = "prec_recall", positive = "No")
+
+# End of script. Save and upload to Canvas.
