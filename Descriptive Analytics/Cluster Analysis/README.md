@@ -1,3 +1,4 @@
+# Cluster Analysis
 
 This project analyzes stock market data using clustering techniques to uncover patterns among companies based on financial metrics. 
 The data is first standardized to ensure comparability across variables like Price, Dividend Yield, and Market Cap. 
