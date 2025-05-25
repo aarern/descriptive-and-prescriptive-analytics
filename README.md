@@ -1,4 +1,4 @@
-# Descriptive-and-prescriptive-analytics
+# Descriptive and Prescriptive Analytics
 BA 3551 (Business Analytics Tools)
 
 The following is an upload of my business analytics labs. The labs cover topics in descriptive analytics (association rules [Apriori Algorithm], cluster analysis [Hierarchical Clustering, K-Means]), and predictive analytics (Classification [K-NN, Decision Trees], Numeric Prediction [K-NN, Regression Trees]).
