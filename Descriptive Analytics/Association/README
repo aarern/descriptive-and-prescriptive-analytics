@@ -17,3 +17,5 @@ This is powerful for finding patterns, say, for example, consumer behavior, but 
 The Apriori Algorithm uses a minimum support threshold and filters all transactions to find the most relevant ones. 
 Then, it sets a minimum confidence level and finds the ones that meet the requirement. 
 Then, it finds the lift and the best transactions in the dataset.
+
+![Image Alt](https://github.com/aarern/descriptive-predictive-analytics/blob/c11aa7c56e9cce4f268a56bdb1c065a0d3d1b80b/Descriptive%20Analytics/Association/asc1)
