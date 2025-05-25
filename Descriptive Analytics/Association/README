@@ -18,4 +18,4 @@ The Apriori Algorithm uses a minimum support threshold and filters all transacti
 Then, it sets a minimum confidence level and finds the ones that meet the requirement. 
 Then, it finds the lift and the best transactions in the dataset.
 
-![asc1](https://github.com/aarern/descriptive-predictive-analytics/blob/main/Descriptive%20Analytics/Association/asc1.jpg?raw=true)
+<img width="892" alt="Image" src="https://github.com/user-attachments/assets/69e4de0c-5518-4524-8580-be5b0f97edcf" />
