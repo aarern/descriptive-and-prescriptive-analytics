@@ -1,3 +1,4 @@
+
 #Association Rules
 
 For this exercise, we found the association of different transactions in a dataset and used the Apriori Algorithm to streamline the calculations.
