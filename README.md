@@ -5,4 +5,5 @@ The following is an upload of my business analytics labs. The labs cover topics 
 
 These tools could be used for finding patterns in consumer data (Association Rules), identifying consumer segments (Cluster Analysis), predicting if your product will be bought by a particular consumer (Classification), or pricing optimization (Numeric Prediction).
 
+![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/21f7af0995da630765253ee5e8dbb4e6272109c1/cer2.jpg)
 ![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/3a2d90a02e0523667380d0b03fdb97145c95b869/cer1.jpg)
