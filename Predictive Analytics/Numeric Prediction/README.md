@@ -1,3 +1,4 @@
+# Numeric Prediction
 
 In this project, we used data about cereal nutrition to train a model that predicts cereal ratings. 
 We worked with features like calories, protein, fat, sugar, and more to predict how well each cereal would be rated. 
