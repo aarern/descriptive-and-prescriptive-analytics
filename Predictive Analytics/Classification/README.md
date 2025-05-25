@@ -1,3 +1,4 @@
+# Classification
 
 In this exercise, we worked with NBA rookie data to predict whether a player will last at least five years in the league. 
 We used various stats like games played, points, assists, and rebounds to train our model. 
