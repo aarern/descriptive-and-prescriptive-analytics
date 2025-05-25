@@ -15,4 +15,4 @@ We also adjusted the cut-off for classifying players and compared how the result
 
 Finally, we saved and compared the performance of both models to make the best prediction about the rookies' future in the NBA.
 
-![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/eecaf886f056dca3253d09e917fdb9d4f8d50cb8/Predictive%20Analytics/Classification/spo1.jpg)
+![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/6cc2b173059f155d9f9c8e13abf5e75d3106db63/Predictive%20Analytics/Classification/images/spo1.jpg)
