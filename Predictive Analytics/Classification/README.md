@@ -13,3 +13,5 @@ The decision tree helped us understand what factors (like games played and offen
 We also adjusted the cut-off for classifying players and compared how the results changed in terms of accuracy and other evaluation metrics.
 
 Finally, we saved and compared the performance of both models to make the best prediction about the rookies' future in the NBA.
+
+![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/eecaf886f056dca3253d09e917fdb9d4f8d50cb8/Predictive%20Analytics/Classification/spo1.jpg)
