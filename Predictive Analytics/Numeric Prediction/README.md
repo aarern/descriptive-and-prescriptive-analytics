@@ -8,5 +8,5 @@ These metrics helped us spot any outliers and get a sense of how accurate the mo
 We also trained a Regression Tree to see how different factors like sugar or calories affected the ratings, and plotted it to visualize the predictions. 
 Finally, we compared the two models and looked at the results to decide which one worked better for predicting cereal ratings.
 
-![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/402cdefff513ffb92913b2c67598f4e36326874f/images/cer1.jpg)
-![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/402cdefff513ffb92913b2c67598f4e36326874f/images/cer2.jpg)
+![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/70c22008fc189fa8153c0a25c1f49e9e8ec21e31/Predictive%20Analytics/Numeric%20Prediction/images/cer1.jpg)
+![image alt](https://github.com/aarern/descriptive-predictive-analytics/blob/70c22008fc189fa8153c0a25c1f49e9e8ec21e31/Predictive%20Analytics/Numeric%20Prediction/images/cer2.jpg)
