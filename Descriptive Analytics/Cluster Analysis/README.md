@@ -6,3 +6,6 @@ Hierarchical clustering is performed using the Manhattan distance and Ward’s m
 K-means clustering is then applied to segment the data into distinct groups, and the elbow method is used to determine the optimal number of clusters. 
 The final clusters are visualized using fviz_cluster() to better understand the composition of each group.
 
+!(image alt)[https://github.com/aarern/descriptive-predictive-analytics/blob/16901872168225c498e173da2fd251dd7159fbc0/Descriptive%20Analytics/Cluster%20Analysis/images/clu1.jpg]
+!(image alt)[https://github.com/aarern/descriptive-predictive-analytics/blob/16901872168225c498e173da2fd251dd7159fbc0/Descriptive%20Analytics/Cluster%20Analysis/images/clu2.jpg]
+!(image alt)[https://github.com/aarern/descriptive-predictive-analytics/blob/16901872168225c498e173da2fd251dd7159fbc0/Descriptive%20Analytics/Cluster%20Analysis/images/clu3.jpg]
